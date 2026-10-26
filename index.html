@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Нэг лаазны аялал · Т02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f0; --surface:#ffffff; --ink:#1e2422; --muted:#5b6662; --line:#cfd6d3;
+  --green:#2E9E6B; --green-ink:#1f7a51; --metal:#b9c2bf; --bauxite:#a4532b;
+  --predict:#DDEBF7; --warn:#FCE4E4; --check:#EDE2F6; --fun:#FFF2CC;
+  color-scheme: light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a18; --surface:#1f2623; --ink:#e7ecea; --muted:#a3aeaa; --line:#36403c;
+    --green:#3dbb84; --green-ink:#5fd29e; --metal:#6f7a76; --bauxite:#d07a4f;
+    --predict:#1d3247; --warn:#4a2626; --check:#352a45; --fun:#433b1c; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a18; --surface:#1f2623; --ink:#e7ecea; --muted:#a3aeaa; --line:#36403c;
+  --green:#3dbb84; --green-ink:#5fd29e; --metal:#6f7a76; --bauxite:#d07a4f;
+  --predict:#1d3247; --warn:#4a2626; --check:#352a45; --fun:#433b1c; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PT Serif",Georgia,"Times New Roman",serif;font-size:17px;line-height:1.55}
+h1,h2,h3,button,.sans{font-family:"PT Sans","Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:680px;margin:0 auto;padding:20px 18px 48px}
+nav{display:flex;gap:6px;margin:4px 0 22px;flex-wrap:wrap}
+nav a{font-family:"PT Sans",sans-serif;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);padding:7px 13px;border-radius:999px;font-size:15px}
+nav a[aria-current="true"]{background:var(--green);border-color:var(--green);color:#fff}
+h1{font-size:32px;line-height:1.1;margin:0 0 6px;color:var(--green-ink)}
+h2{font-size:24px;line-height:1.2;margin:0 0 10px}
+.lead{color:var(--muted);margin:0 0 18px}
+section{display:none}
+section.on{display:block}
+.card{background:var(--surface);border-radius:14px;padding:18px;margin:14px 0;border:1px solid var(--line)}
+.box{border-radius:10px;padding:12px 14px;margin:14px 0;font-size:16px}
+.predict{background:var(--predict)} .warn{background:var(--warn)} .check{background:var(--check)} .fun{background:var(--fun)}
+.box b.t{font-family:"PT Sans",sans-serif;display:block;margin-bottom:4px}
+button{font-size:16px;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;background:var(--green);color:#fff;font-weight:700}
+button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);font-weight:400}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--green-ink);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* journey */
+.map{width:100%;height:auto;display:block}
+.km{font-family:"PT Sans",sans-serif;font-size:44px;font-weight:700;color:var(--green-ink);line-height:1}
+.kmlab{color:var(--muted);font-size:14px}
+.stop h3{margin:10px 0 4px;font-size:19px}
+.bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .6s ease}
+/* energy */
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end;height:200px;margin:12px 0 4px}
+.b{background:var(--green);border-radius:8px 8px 0 0;transition:height .6s ease;position:relative}
+.b.r{background:var(--metal)}
+.blab{display:grid;grid-template-columns:1fr 1fr;gap:14px;font-family:"PT Sans",sans-serif;font-size:14px;text-align:center;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--green)}
+.big{font-family:"PT Sans",sans-serif;font-size:30px;font-weight:700;color:var(--green-ink)}
+/* choice */
+.choices{display:grid;gap:8px}
+.choices button{text-align:left;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);font-weight:400}
+.choices button[aria-pressed="true"]{border-color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
+.out{margin-top:12px;min-height:3em}
+.q{margin:14px 0}
+.q p{margin:0 0 6px;font-weight:700;font-family:"PT Sans",sans-serif}
+.q .opts{display:grid;gap:6px}
+.q .opts button{text-align:left;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);font-weight:400;padding:9px 12px}
+.q .opts button.ok{border-color:var(--green);background:color-mix(in srgb,var(--green) 18%,var(--surface))}
+.q .opts button.no{border-color:#c8384e}
+.fb{font-size:15px;color:var(--muted);margin-top:4px;min-height:1.3em}
+footer{color:var(--muted);font-size:13px;margin-top:28px;font-family:"PT Sans",sans-serif;line-height:1.4}
+@media (prefers-reduced-motion: reduce){ .bar i,.b{transition:none} }
+</style>
+</head>
+<body>
+<main>
+  <h1>Нэг лаазны аялал</h1>
+  <p class="lead">CHEM101 «Ширээний ном»-ын 1.4 хэсгийн дижитал хос. Гурван алхам, нийт 4–5 минут.</p>
+  <nav aria-label="Хэсгүүд">
+    <a href="#aylal" data-k="aylal">1. Аялал</a>
+    <a href="#energi" data-k="energi">2. Эрчим хүч</a>
+    <a href="#songolt" data-k="songolt">3. Таны сонголт</a>
+  </nav>
+
+  <!-- 1 -->
+  <section id="s-aylal">
+    <h2>Таны лааз хэдэн км аялсан бэ?</h2>
+    <div class="box predict"><b class="t">Эхлээд таамаглаарай</b>Тоогоо толгойдоо бодчихоод «Аяллыг эхлүүлэх» дээр дарна уу.</div>
+    <div class="card">
+      <svg class="map" viewBox="0 0 600 220" role="img" aria-label="Уурхайгаас Улаанбаатар хүртэлх лаазны замын бүдүүвч">
+        <path id="route" d="M40 175 C 140 200, 200 185, 260 150 S 380 60, 450 80 S 530 110, 565 75" fill="none" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+        <path id="done" d="M40 175 C 140 200, 200 185, 260 150 S 380 60, 450 80 S 530 110, 565 75" fill="none" stroke="var(--green)" stroke-width="6" stroke-linecap="round"/>
+        <g id="dots"></g>
+        <circle id="can" r="11" fill="var(--metal)" stroke="var(--ink)" stroke-width="2" cx="40" cy="175"/>
+      </svg>
+      <div class="row" style="justify-content:space-between;align-items:flex-end">
+        <div><div class="km" id="km">0</div><div class="kmlab">км (ойролцоогоор)</div></div>
+        <div class="row">
+          <button class="ghost" id="reset">Дахин</button>
+          <button id="next">Аяллыг эхлүүлэх</button>
+        </div>
+      </div>
+      <div class="bar" aria-hidden="true"><i id="earth"></i></div>
+      <div class="kmlab" id="earthlab">Дэлхийн тойрог 40 000 км-ийн 0%</div>
+      <div class="stop" id="stop" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="s-energi">
+    <h2>Шинэ лааз уу, хуучин лаазаас хийсэн үү?</h2>
+    <p>Хөнгөнцагааныг хүдрээс гаргахын тулд Al–O холбоог цахилгаанаар таслах хэрэгтэй. Хуучин лаазыг зүгээр л 660 °C-т хайлуулна. Ялгааг нь харцгаая.</p>
+    <div class="card">
+      <div class="bars" aria-hidden="true"><div class="b" id="bn" style="height:0"></div><div class="b r" id="br" style="height:0"></div></div>
+      <div class="blab"><div>Хүдрээс шинэ лааз<br><b id="vn">≈ 0.18 кВт·ц</b></div><div>Хуучин лаазаас<br><b id="vr">≈ 0.01 кВт·ц</b></div></div>
+    </div>
+    <div class="card">
+      <label for="n" class="sans"><b>Танай гэр бүл долоо хоногт хэдэн лааз хаядаг вэ?</b></label>
+      <input type="range" id="n" min="0" max="30" value="6">
+      <p class="sans" style="margin:4px 0 0">Долоо хоногт <b id="nv">6</b> лааз → жилд <b id="ny">312</b> лааз</p>
+      <p style="margin:12px 0 2px">Эдгээрийг дахин боловсруулбал жилд хэмнэх цахилгаан:</p>
+      <div class="big" id="kwh">≈ 53 кВт·ц</div>
+      <p style="margin:4px 0 0" id="led">10 Вт-ын LED чийдэнг ≈ 5 300 цаг буюу 7 сар тасралтгүй асаана.</p>
+    </div>
+    <div class="box warn"><b class="t">Анхаар</b>Тооцоонд зөвхөн электролизын цахилгааныг (≈ 14 кВт·ц/кг, IAI) авсан. Лаазны масс ≈ 13 г, хэмнэлт 95% гэж тооцов. Тээвэр, цуглуулалтын зардлыг оруулаагүй.</div>
+  </section>
+
+  <!-- 3 -->
+  <section id="s-songolt">
+    <h2>Ундаагаа уучихлаа. Лаазаа хаана хаях вэ?</h2>
+    <div class="choices" role="group" aria-label="Сонголт">
+      <button data-c="0" aria-pressed="false">Ойрын хогийн саванд</button>
+      <button data-c="1" aria-pressed="false">Лааз, хаягдал металл цуглуулах цэгт</button>
+      <button data-c="2" aria-pressed="false">Гудамжинд, зүгээр л тавьчихна</button>
+    </div>
+    <div class="card out" id="out" aria-live="polite"><span class="kmlab">Нэгийг нь сонгоод юу болохыг хараарай.</span></div>
+
+    <div class="card">
+      <h2 style="font-size:20px">Өөрийгөө шалга</h2>
+      <div id="quiz"></div>
+      <p class="sans" id="score" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <footer>
+    Т02 баг · МУИС, CHEM101, 2026 оны намар. Эх сурвалж: International Aluminium Institute (электролизын эрчим хүч); Aluminum Association, Novelis (95% хэмнэлт, 60 хоног); GRID-Arendal (боксит → хөнгөнцагаан). Аяллын зай ойролцоо, бүдүүвч зураг масштабгүй.
+  </footer>
+</main>
+
+<script>
+(function(){
+  /* ---------- tabs via hash ---------- */
+  const keys=["aylal","energi","songolt"];
+  function show(k){
+    if(!keys.includes(k)) k="aylal";
+    keys.forEach(x=>{document.getElementById("s-"+x).classList.toggle("on",x===k);});
+    document.querySelectorAll("nav a").forEach(a=>a.setAttribute("aria-current",a.dataset.k===k?"true":"false"));
+    if(k==="energi") drawBars();
+  }
+  window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+  show(location.hash.slice(1));
+
+  /* ---------- 1. journey ---------- */
+  const stops=[
+    {t:"Боксит уурхай · Австрали эсвэл Гвиней",km:0,f:0,d:"Лааз газрын хэвлийд боксит хүдэр байдлаар эхэлнэ. Хөнгөнцагаан хүчилтөрөгчтэй хүчтэй холбогддог тул энд Al₂O₃ хэлбэрээр «нуугдаж» байна."},
+    {t:"Al₂O₃ үйлдвэр",km:300,f:.2,d:"Хүдрийг халуун NaOH уусмалд уусгаад цагаан нунтаг Al₂O₃ гаргана. 4–5 тонн хүдрээс 2 тонн нунтаг, түүнээс 1 тонн хөнгөнцагаан гарна."},
+    {t:"Электролиз ба лааз үйлдвэр · Хятад",km:7800,f:.62,d:"Далайгаар хэдэн мянган км явсны дараа нунтгийг цахилгаанаар задалж метал болгоно. Al³⁺ ион бүр 3 электрон авна. Энэ бол замын хамгийн их цахилгаан иддэг зогсоол."},
+    {t:"Эрээн → Замын-Үүд → Улаанбаатар",km:10000,f:1,d:"Галт тэргээр хил давж дэлгүүрт ирлээ. Нийт ≈ 10 000 км. Дэлхийг хагас биш, дөрөвний нэг орчим тойрсон гэсэн үг. Та зөв таамагласан уу?"}
+  ];
+  const route=document.getElementById("route"), done=document.getElementById("done"), can=document.getElementById("can");
+  const L=route.getTotalLength(); done.style.strokeDasharray=L; done.style.strokeDashoffset=L;
+  const dots=document.getElementById("dots");
+  stops.forEach((s,i)=>{const p=route.getPointAtLength(L*s.f);
+    dots.insertAdjacentHTML("beforeend",`<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--surface)" stroke="var(--green)" stroke-width="3"/><text x="${p.x}" y="${p.y-14}" text-anchor="middle" font-family="PT Sans" font-size="14" fill="var(--ink)">${i+1}</text>`);});
+  let idx=-1, curKm=0, curF=0;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nextB=document.getElementById("next");
+  function go(i){
+    const s=stops[i], k0=curKm, f0=curF, t0=performance.now(), dur=reduce?0:1100;
+    function step(t){const u=dur?Math.min(1,(t-t0)/dur):1, e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+      curKm=k0+(s.km-k0)*e; curF=f0+(s.f-f0)*e;
+      const p=route.getPointAtLength(L*curF); can.setAttribute("cx",p.x); can.setAttribute("cy",p.y);
+      done.style.strokeDashoffset=L*(1-curF);
+      document.getElementById("km").textContent=Math.round(curKm).toLocaleString("ru-RU");
+      const pct=curKm/40000*100; document.getElementById("earth").style.width=pct+"%";
+      document.getElementById("earthlab").textContent=`Дэлхийн тойрог 40 000 км-ийн ${Math.round(pct)}%`;
+      if(u<1) requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+    document.getElementById("stop").innerHTML=`<h3>${i+1}. ${s.t}</h3><p style="margin:0">${s.d}</p>`;
+    nextB.textContent = i<stops.length-1 ? "Дараагийн зогсоол" : "Эрчим хүч рүү";
+  }
+  nextB.addEventListener("click",()=>{ if(idx>=stops.length-1){location.hash="energi";return;} idx++; go(idx); });
+  document.getElementById("reset").addEventListener("click",()=>{idx=-1;curKm=0;curF=0;
+    const p=route.getPointAtLength(0);can.setAttribute("cx",p.x);can.setAttribute("cy",p.y);done.style.strokeDashoffset=L;
+    document.getElementById("km").textContent="0";document.getElementById("earth").style.width="0";
+    document.getElementById("earthlab").textContent="Дэлхийн тойрог 40 000 км-ийн 0%";document.getElementById("stop").innerHTML="";nextB.textContent="Аяллыг эхлүүлэх";});
+
+  /* ---------- 2. energy ---------- */
+  const PER_NEW=0.013*14, PER_SAVE=PER_NEW*0.95;
+  function drawBars(){ requestAnimationFrame(()=>{document.getElementById("bn").style.height="100%";document.getElementById("br").style.height="5%";}); }
+  const n=document.getElementById("n");
+  function calc(){const w=+n.value, y=w*52, k=y*PER_SAVE, h=k*100;
+    document.getElementById("nv").textContent=w; document.getElementById("ny").textContent=y.toLocaleString("ru-RU");
+    document.getElementById("kwh").textContent="≈ "+Math.round(k).toLocaleString("ru-RU")+" кВт·ц";
+    const months=h/(24*30);
+    document.getElementById("led").textContent= w===0 ? "Лааз хаядаггүй бол хэмнэх зүйл ч байхгүй. Сайн байна!" :
+      `10 Вт-ын LED чийдэнг ≈ ${Math.round(h/10)*10>=1000?(Math.round(h/100)*100).toLocaleString("ru-RU"):Math.round(h).toLocaleString("ru-RU")} цаг` + (months>=1?` буюу ${months.toFixed(1)} сар тасралтгүй асаана.`:" асаана.");}
+  n.addEventListener("input",calc); calc();
+
+  /* ---------- 3. choice ---------- */
+  const outs=[
+    "<b>Өлгийгөөс булш.</b> Лааз хогийн цэгт очно. Гадаргуу дээрх нимгэн Al₂O₃ хальс түүнийг хамгаалдаг тул хэдэн зуун жил задрахгүй хэвтэнэ. Түүнд зарцуулсан ≈ 0.18 кВт·ц цахилгаан хамт булагдана.",
+    "<b>Өлгийгөөс өлгий.</b> Лаазыг ангилж, хайлуулаад шинэ хуудас болгоно. Шинээр хийхээс 95% бага эрчим хүч зарцуулна. АНУ-д лааз ийм замаар 60 хүрэхгүй хоногт дэлгүүрт буцаж ирдэг.",
+    "<b>Хамгийн муу зам.</b> Салхинд хийсэж, бороо орж, эцэст нь хөрс, усанд үлдэнэ. Хэн нэгэн түүж цуглуулахгүй бол хогийн цэгт ч хүрэхгүй."
+  ];
+  document.querySelectorAll(".choices button").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(".choices button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+    document.getElementById("out").innerHTML=outs[+b.dataset.c];}));
+
+  const Q=[
+    {p:"Хөнгөнцагаан байгальд яагаад цэвэр металл хэлбэрээр олддоггүй вэ?",o:["Хэт ховор металл учраас","Хүчилтөрөгчтэй хүчтэй холбогддог учраас","Газрын гүнд хайлчихдаг учраас"],a:1,e:"Хөнгөнцагаан царцдаст элбэг ч Al₂O₃ хэлбэрээр байдаг."},
+    {p:"Лааз хийхэд хамгийн их цахилгаан аль алхамд ордог вэ?",o:["Тээвэрлэлт","Лаазыг хэлбэржүүлэх","Al₂O₃-ийн электролиз"],a:2,e:"Al–O холбоог таслахад ≈ 14 кВт·ц/кг цахилгаан шаардагдана."},
+    {p:"Дахин боловсруулах нь яагаад бага эрчим хүч шаарддаг вэ?",o:["Al–O холбоог дахин таслах шаардлагагүй","Хуучин лааз хөнгөн учраас","Бага температурт электролиз хийдэг учраас"],a:0,e:"Зүгээр 660 °C-т хайлуулна, электролиз хэрэггүй."}
+  ];
+  let score=0, answered=0;
+  const qz=document.getElementById("quiz");
+  Q.forEach((q,i)=>{
+    const d=document.createElement("div"); d.className="q";
+    d.innerHTML=`<p>${i+1}. ${q.p}</p><div class="opts">${q.o.map((o,j)=>`<button data-j="${j}">${o}</button>`).join("")}</div><div class="fb"></div>`;
+    d.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+      if(d.dataset.done) return; d.dataset.done=1; answered++;
+      const j=+b.dataset.j; d.querySelectorAll("button")[q.a].classList.add("ok");
+      if(j===q.a){score++; d.querySelector(".fb").textContent="Зөв. "+q.e;} else {b.classList.add("no"); d.querySelector(".fb").textContent="Буруу. "+q.e;}
+      if(answered===Q.length) document.getElementById("score").textContent=`Та ${Q.length}-аас ${score} зөв хариуллаа.`;
+    }));
+    qz.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>
